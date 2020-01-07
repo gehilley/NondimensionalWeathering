@@ -1,4 +1,4 @@
-def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r = 1/4):
+def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r = 0.25):
     from utils import pack_values
     from muscl import muscl, vanAlbada
     import numpy as np
@@ -20,7 +20,7 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
 
     def source_function(x):
         X = x[:,0]
-        Y = x[:,1]
+        Y = (x[:,1] > 0) * x[:,1]
         s = np.zeros_like(x)
         s[:,0] = -np.power(Y,r)*np.power(X,2)
         s[:,1] = -r*np.power(X,2)*np.power(Y,r)/Yostar
@@ -52,8 +52,12 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
         return pack_values(dxdt, packing_geometry=None)
 
     from scipy.integrate import solve_ivp
-    out = solve_ivp(to_integrate, (np.min(tstar), np.max(tstar)), pack_values(x0, packing_geometry=None), method='LSODA', t_eval=tstar)
-    y = out.y.T
+    out = solve_ivp(to_integrate, (np.min(tstar), np.max(tstar)), pack_values(x0, packing_geometry=None), method='RK45', t_eval=tstar)
+    y = np.zeros((len(tstar),x0.shape[0],x0.shape[1]))
+    this_y = out.y.T
+    for i in range(len(tstar)):
+        y[i,:,:] = pack_values(this_y[i,:],packing_geometry=x0.shape)
+    return y
 
 def test_weathering_model():
     from utils import pack_values
@@ -64,9 +68,9 @@ def test_weathering_model():
     Xo = 1
     x0 = np.zeros((nx,2))
     x0[:,0] = Xo
-    t = np.array([0, 2, 4, 6, 8, 10, 12])*5
+    t = np.array([0, 2, 4, 6, 8, 10, 12])
     vstar = 1
-    r = 4
+    r = 0.25
     Yostar = 1
 
     def bc_function(x):
@@ -81,7 +85,7 @@ def test_weathering_model():
 
     def source_function(x):
         X = x[:,0]
-        Y = x[:,1]
+        Y = (x[:,1] > 0) * x[:,1]
         s = np.zeros_like(x)
         s[:,0] = -np.power(Y,r)*np.power(X,2)
         s[:,1] = -r*np.power(X,2)*np.power(Y,r)/Yostar
@@ -110,10 +114,11 @@ def test_weathering_model():
         dxdt_source = source_function(x_unpacked)
         dxdt_diffusion = diffusion_function(x_unpacked)
         dxdt = dxdt_flux + dxdt_source + dxdt_diffusion
+        print(t)
         return pack_values(dxdt, packing_geometry=None)
 
     from scipy.integrate import solve_ivp
-    out = solve_ivp(to_integrate, (np.min(t), np.max(t)), pack_values(x0, packing_geometry=None), method='LSODA', t_eval=t)
+    out = solve_ivp(to_integrate, (np.min(t), np.max(t)), pack_values(x0, packing_geometry=None), method='RK45', t_eval=t)
     y = out.y.T
     import matplotlib.pylab as plt
 
