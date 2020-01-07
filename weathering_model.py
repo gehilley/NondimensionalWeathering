@@ -3,7 +3,7 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
     from muscl import muscl, vanAlbada
     import numpy as np
 
-    nxstar = np.round(Lstar / dxstar)
+    nxstar = int(np.round(Lstar / dxstar))
     x0 = np.zeros((nxstar,2))
     x0[:,0] = Xostar
 
