@@ -53,11 +53,14 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
 
     from scipy.integrate import solve_ivp
     out = solve_ivp(to_integrate, (np.min(tstar), np.max(tstar)), pack_values(x0, packing_geometry=None), method='RK45', t_eval=tstar)
-    y = np.zeros((len(tstar),x0.shape[0],x0.shape[1]))
+    X_star = np.zeros((len(tstar),x0.shape[0]))
+    Y_star = np.zeros((len(tstar),x0.shape[0]))
+
     this_y = out.y.T
     for i in range(len(tstar)):
-        y[i,:,:] = pack_values(this_y[i,:],packing_geometry=x0.shape)
-    return y
+        X_star[i,:] = pack_values(this_y[i,:],packing_geometry=x0.shape)[:,0]
+        Y_star[i,:] = pack_values(this_y[i,:],packing_geometry=x0.shape)[:,1]
+    return np.arange(0, Lstar, dxstar), X_star, Y_star
 
 def test_weathering_model():
     from utils import pack_values
