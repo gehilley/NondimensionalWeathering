@@ -3,15 +3,15 @@ import numpy as np
 import matplotlib.pylab as plt
 
 # Run model:
-L_star = 50
-X0_star = 1
-Y0_star = 1
-v_star = 1
-nx = 1000
-t_star = np.array([0, 2, 4, 6, 8, 10, 12])
+L_star = 0.228
+X0_star = 5.27
+Y0_star = 0.000342
+v_star = 2.07
+nx = 101
+t_star = np.array([0, 4.4, 8.8, 13.2, 17.6, 22, 26.4, 30.8, 35.2, 39.6, 44])
 dx_star = L_star / float(nx)
 
-x, X, Y = run_weathering_model(L_star, X0_star, v_star, Y0_star, t_star, dx_star=dx_star)
+x, X, Y = run_weathering_model(L_star, X0_star, v_star, Y0_star, t_star, dxstar=dx_star)
 
 # X[0,:] is the first t_star, X[1,:] is the second t_star, etc
 

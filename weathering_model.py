@@ -1,3 +1,6 @@
+tout = 0
+
+
 def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r = 0.25):
     from utils import pack_values
     from muscl import muscl, vanAlbada
@@ -6,11 +9,11 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
     nxstar = int(np.round(Lstar / dxstar))
     x0 = np.zeros((nxstar,2))
     x0[:,0] = Xostar
-
+    x0[:,1] = 0.0
 
     def bc_function(x):
-        yb = x[-1,1]
-        return (np.array([[Xostar, 1],[0, 0]]), np.array([[Xostar, yb],[0, 0]]))
+        yb = x[-1, 1]
+        return (np.array([[Xostar, 1], [0, 0]]), np.array([[Xostar, yb], [0, 0]]))
 
     def flux_function(x):
 
@@ -28,7 +31,7 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
 
     def diffusion_function(x):
         x_d = np.zeros((x0.shape[0]+2,2))
-        x_d[1:-1,:] = x
+        x_d[1:-1,1] = x[:,1]
         (topBC, bottomBC) = bc_function(x)
         x_d[0,1] = topBC[0,1]
         x_d[-1,1] = bottomBC[0,1]
@@ -49,10 +52,20 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
         dxdt_source = source_function(x_unpacked)
         dxdt_diffusion = diffusion_function(x_unpacked)
         dxdt = dxdt_flux + dxdt_source + dxdt_diffusion
+        global tout
+        if tout < t:
+            print(tout)
+            tout += 0.1
+
         return pack_values(dxdt, packing_geometry=None)
 
     from scipy.integrate import solve_ivp
-    out = solve_ivp(to_integrate, (np.min(tstar), np.max(tstar)), pack_values(x0, packing_geometry=None), method='RK45', t_eval=tstar)
+    cfl_dt = 0.25 * dxstar / np.abs(vstar)
+
+    out = solve_ivp(to_integrate, (np.min(tstar), np.max(tstar)), pack_values(x0, packing_geometry=None), method='LSODA', max_step = cfl_dt, t_eval=tstar, lband = 2, uband = 2, atol = 1e-3, rtol = 1e-1)
+    if out is None:
+        print('problem')
+    print(out)
     X_star = np.zeros((len(tstar),x0.shape[0]))
     Y_star = np.zeros((len(tstar),x0.shape[0]))
 
@@ -77,7 +90,7 @@ def test_weathering_model():
     Yostar = 1
 
     def bc_function(x):
-        yb = x[-1,1]
+
         return (np.array([[Xo, 1],[0, 0]]), np.array([[Xo, yb],[0, 0]]))
 
     def flux_function(x):
