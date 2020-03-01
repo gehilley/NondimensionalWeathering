@@ -1,9 +1,8 @@
 tout = 0
 
-
 def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r = 0.25):
-    from utils import pack_values
-    from muscl import muscl, vanAlbada
+    from weathering_model.utils import pack_values
+    from weathering_model.muscl import muscl, vanAlbada
     import numpy as np
 
     nxstar = int(np.round(Lstar / dxstar))
@@ -76,8 +75,8 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
     return np.arange(0, Lstar, dxstar), X_star, Y_star
 
 def test_weathering_model():
-    from utils import pack_values
-    from muscl import muscl, vanAlbada
+    from weathering_model.utils import pack_values
+    from weathering_model.muscl import muscl, vanAlbada
     import numpy as np
     nx = 1000
     dx = 0.05
