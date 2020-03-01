@@ -1,4 +1,4 @@
-from weathering_model import run_weathering_model
+from weathering_model.weathering_model import run_weathering_model
 import numpy as np
 import matplotlib.pylab as plt
 
