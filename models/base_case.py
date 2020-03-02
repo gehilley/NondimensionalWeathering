@@ -5,12 +5,12 @@ import numpy as np
 import pickle as p
 
 # Run model:
-L_star = 0.228
+L_star = 7.61
 X0_star = 5.27
 Y0_star = 0.000342
-v_star = 2.07
+v_star = 634
 nx = 101
-t_star = np.array([0, 4.4, 8.8, 13.2, 17.6, 22, 26.4, 30.8, 35.2, 39.6, 44])
+t_star = np.array([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22])
 dx_star = L_star / float(nx)
 
 x, X, Y = run_weathering_model(L_star, X0_star, v_star, Y0_star, t_star, dxstar=dx_star)
