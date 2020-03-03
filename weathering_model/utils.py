@@ -27,6 +27,6 @@ def plot_models(filename):
 
     for i in range(len(t_star)):
         plt.figure(1)
-        plt.plot(x, X[i, :], '-')
+        plt.plot(x[0:-1], X[i, :], '-')
         plt.figure(2)
-        plt.plot(x, Y[i, :], '-')
+        plt.plot(x[0:-1], Y[i, :], '-')
