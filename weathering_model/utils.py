@@ -23,10 +23,15 @@ def plot_models(filename):
 
     # X[0,:] is the first t_star, X[1,:] is the second t_star, etc
 
-    plt.ion()
+    if(x.shape[0] == X.shape[1]):
+        x_plot = x
+    else:
+        x_plot = x[0:-1]
 
     for i in range(len(t_star)):
         plt.figure(1)
-        plt.plot(x[0:-1], X[i, :], '-')
+        plt.plot(x_plot, X[i, :], '-')
         plt.figure(2)
-        plt.plot(x[0:-1], Y[i, :], '-')
+        plt.plot(x_plot, Y[i, :], '-')
+
+    plt.show()
