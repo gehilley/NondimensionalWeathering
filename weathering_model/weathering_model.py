@@ -55,7 +55,7 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
         dxdt = dxdt_flux + dxdt_source + dxdt_diffusion
         global tout
         if tout < t:
-            print(tout)
+            print(tout, flush = True)
             tout += 0.1
 
         return pack_values(dxdt, packing_geometry=None)
