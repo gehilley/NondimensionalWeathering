@@ -5,14 +5,14 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
     from weathering_model.muscl import muscl, vanAlbada
     import numpy as np
 
-    nxstar = int(np.round(Lstar / dxstar))
+    nxstar = int(np.ceil(Lstar / dxstar))
     x0 = np.zeros((nxstar,2))
     x0[:,0] = Xostar
     x0[:,1] = 0.0
 
     def bc_function(x):
         yb = x[-1, 1]
-        return (np.array([[Xostar, 1], [0, 0]]), np.array([[Xostar, yb], [0, 0]]))
+        return (np.array([[Xostar, 1], [Xostar, 1]]), np.array([[Xostar, yb], [Xostar, yb]]))
 
     def flux_function(x):
 
@@ -21,7 +21,7 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
         return x * v
 
     def source_function(x):
-        X = x[:,0]
+        X = (x[:,0] <= Xostar) * x[:,0] + (x[:,0] > Xostar) * Xostar
         Y = (x[:,1] > 0) * x[:,1]
         s = np.zeros_like(x)
         s[:,0] = -np.power(Y,r)*np.power(X,2)
@@ -48,8 +48,10 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
     def to_integrate(t, x):
         x_unpacked = pack_values(x, packing_geometry=x0.shape)
         dxdt_flux = muscl(x_unpacked, dxstar, bc_function, flux_function, vanAlbada, prop_speed = prop_speed, reconstruction='parabolic')
+        dxdt_flux[:,0] = 0
         dxdt_source = source_function(x_unpacked)
         dxdt_diffusion = diffusion_function(x_unpacked)
+        dxdt_diffusion[:,0] = 0
         dxdt = dxdt_flux + dxdt_source + dxdt_diffusion
         global tout
         if tout < t:
@@ -61,7 +63,7 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
     from scipy.integrate import solve_ivp
     cfl_dt = 0.25 * dxstar / np.abs(vstar)
 
-    out = solve_ivp(to_integrate, (np.min(tstar), np.max(tstar)), pack_values(x0, packing_geometry=None), method='LSODA', max_step = cfl_dt, t_eval=tstar, lband = 2, uband = 2, atol = 1e-3, rtol = 1e-1)
+    out = solve_ivp(to_integrate, (np.min(tstar), np.max(tstar)), pack_values(x0, packing_geometry=None), method='LSODA', max_step = cfl_dt, t_eval=tstar, lband = 2, uband = 2)
     if out is None:
         print('problem')
     print(out)
