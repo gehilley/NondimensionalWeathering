@@ -1,6 +1,6 @@
 tout = 0
 
-def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r = 0.25):
+def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r = 0.25, method = 'LSODA'):
     from weathering_model.utils import pack_values
     from weathering_model.muscl import muscl, vanAlbada
     import numpy as np
@@ -63,7 +63,7 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
     from scipy.integrate import solve_ivp
     cfl_dt = 0.25 * dxstar / np.abs(vstar)
 
-    out = solve_ivp(to_integrate, (np.min(tstar), np.max(tstar)), pack_values(x0, packing_geometry=None), method='LSODA', max_step = cfl_dt, t_eval=tstar, lband = 2, uband = 2)
+    out = solve_ivp(to_integrate, (np.min(tstar), np.max(tstar)), pack_values(x0, packing_geometry=None), method=method, max_step = cfl_dt, t_eval=tstar, lband = 2, uband = 2)
     if out is None:
         print('problem')
     print(out)
