@@ -25,8 +25,8 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
         Y = (x[:,1] > 0) * x[:,1]
         s = np.zeros_like(x)
 
-        s[:,0] = -np.power(Y,r)*np.power(X,2)*(X > 0).astype(X.dtype)*(Y > 0).astype(Y.dtype)*(X < Xostar).astype(X.dtype)*(Y < Yostar).astype(Y.dtype)
-        s[:,1] = -r*np.power(X,2)*np.power(Y,r)/Yostar*(X > 0).astype(X.dtype)*(Y > 0).astype(Y.dtype)*(X < Xostar).astype(X.dtype)*(Y < Yostar).astype(Y.dtype)
+        s[:,0] = -np.power(Y,r)*np.power(X,2)*(X > 0).astype(X.dtype)*(Y > 0).astype(Y.dtype)*(X <= Xostar).astype(X.dtype)*(Y <= Yostar).astype(Y.dtype)
+        s[:,1] = -r*np.power(X,2)*np.power(Y,r)/Yostar*(X > 0).astype(X.dtype)*(Y > 0).astype(Y.dtype)*(X <= Xostar).astype(X.dtype)*(Y <= Yostar).astype(Y.dtype)
         return s
 
     def diffusion_function(x):
