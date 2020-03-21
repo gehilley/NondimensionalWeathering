@@ -18,6 +18,7 @@ def plot_models(filename):
 
     import pickle as p
     import matplotlib.pylab as plt
+    import numpy as np
 
     (x, X, Y, L_star, X0_star, Y0_star, v_star, nx, t_star, dx_star) = p.load(open(filename, 'rb'))
 
@@ -34,4 +35,10 @@ def plot_models(filename):
         plt.figure(2)
         plt.plot(x_plot, Y[i, :], '-')
 
+    maxX = np.max(X)
+    maxY = np.max(Y)
+    plt.figure(1)
+    plt.axis([0, np.max(x), 0, maxX])
+    plt.figure(2)
+    plt.axis([0, np.max(x), 0, maxY])
     plt.show()
