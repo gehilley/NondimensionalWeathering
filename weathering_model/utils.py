@@ -14,7 +14,7 @@ def pack_values(values, packing_geometry=None):
     assert(np.prod(values.shape) == np.prod(np.array(packing_geometry)))
     return np.reshape(values, packing_geometry, order='F')
 
-def plot_models(filename):
+def plot_models(filename, save_plots = False):
 
     import pickle as p
     import matplotlib.pylab as plt
@@ -24,21 +24,31 @@ def plot_models(filename):
 
     # X[0,:] is the first t_star, X[1,:] is the second t_star, etc
 
+    '''
     if(x.shape[0] == X.shape[1]):
         x_plot = x
     else:
         x_plot = x[0:-1]
+    '''
 
     for i in range(len(t_star)):
         plt.figure(1)
-        plt.plot(x_plot, X[i, :], '-')
+        plt.plot(x, X[i, :], '-')
         plt.figure(2)
-        plt.plot(x_plot, Y[i, :], '-')
+        plt.plot(x, Y[i, :], '-')
 
-    maxX = np.max(X)
-    maxY = np.max(Y)
     plt.figure(1)
-    plt.axis([0, np.max(x), 0, maxX])
+    plt.axis([0, np.max(x), 0, X0_star*1.1])
     plt.figure(2)
-    plt.axis([0, np.max(x), 0, maxY])
-    plt.show()
+    plt.axis([0, np.max(x), 0, 1.1])
+    if save_plots:
+        plt.figure(1)
+        plt.savefig(filename.replace('.p','_FeO.png'))
+        plt.figure(2)
+        plt.savefig(filename.replace('.p','_O2.png'))
+    else:
+        plt.show()
+    plt.figure(1)
+    plt.close()
+    plt.figure(2)
+    plt.close()
