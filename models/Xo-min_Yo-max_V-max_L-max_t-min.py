@@ -5,9 +5,9 @@ import numpy as np
 import pickle as p
 
 # Run model:
-L_star = 1900
+L_star = 15.2
 X0_star = 0.122
-Y0_star = 0.00171
+Y0_star = 0.00174
 v_star = 1040000000
 nx = 101
 t_star = np.array([0, 0.000017, 0.000035, 0.000052, 0.000070, 0.000087, 0.000104, 0.000122, 0.000139, 0.000157, 0.000174])
