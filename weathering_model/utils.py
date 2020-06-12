@@ -32,8 +32,6 @@ def plot_models(filenames, out_prefix, save_plots = False, plot_symbols = None, 
 
         for (i, plot_symbol) in zip(plot_indexes, plot_symbols):
             plt.figure(1)
-            print(color+plot_symbol)
-            print(i)
             plt.plot(x, X[i, :], color+plot_symbol)
             plt.figure(2)
             plt.plot(x, Y[i, :], color+plot_symbol)
