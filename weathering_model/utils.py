@@ -22,18 +22,18 @@ def plot_models(filenames, out_prefix, save_plots = False, plot_symbols = None, 
 
     X0_star_max = 0.0
     plot_symbols = ['-' for i in range(len(filenames))] if plot_symbols is None else plot_symbols
+    plot_indexes = t_indexes if t_indexes is not None else range(len(t_star))
+    pcs = ['' for i in range(len(plot_indexes))] if plot_colors is None else plot_colors
 
-    for (filename, plot_symbol) in zip(filenames, plot_symbols):
+    for (filename, color) in zip(filenames, pcs):
 
         (x, X, Y, L_star, X0_star, Y0_star, v_star, nx, t_star, dx_star) = p.load(open(filename, 'rb'))
         X0_star_max = X0_star_max if X0_star_max > X0_star else X0_star
 
-        plot_indexes = t_indexes if t_indexes is not None else range(len(t_star))
-
-        pcs = ['' for i in range(len(plot_indexes))] if plot_colors is None else plot_colors
-
-        for (i, color) in zip(plot_indexes, pcs):
+        for (i, plot_symbol) in zip(plot_indexes, plot_symbols):
             plt.figure(1)
+            print(color+plot_symbol)
+            print(i)
             plt.plot(x, X[i, :], color+plot_symbol)
             plt.figure(2)
             plt.plot(x, Y[i, :], color+plot_symbol)
@@ -44,9 +44,9 @@ def plot_models(filenames, out_prefix, save_plots = False, plot_symbols = None, 
     plt.axis([0, np.max(x), 0, 1.1])
     if save_plots:
         plt.figure(1)
-        plt.savefig(out_prefix+'_FeO.png')
+        plt.savefig(out_prefix+'_FeO.eps')
         plt.figure(2)
-        plt.savefig(out_prefix+'_O2.png')
+        plt.savefig(out_prefix+'_O2.eps')
     else:
         plt.show()
     plt.figure(1)
