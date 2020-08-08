@@ -7,7 +7,7 @@ def run_weathering_model(Lstar, vstar, Yostar, tstar, dxstar = 0.05, r = 0.25, m
 
     nxstar = int(np.ceil(Lstar / dxstar))
     x0 = np.zeros((nxstar,2))
-    x0[:,0] = Xostar
+    x0[:,0] = 1.
     x0[:,1] = 0.0
 
     def bc_function(x):
@@ -93,7 +93,7 @@ def test_weathering_model():
 
     def bc_function(x):
 
-        return (np.array([[Xo, 1],[0, 0]]), np.array([[Xo, yb],[0, 0]]))
+        return (np.array([[1.0, 1],[0, 0]]), np.array([[1.0, yb],[0, 0]]))
 
     def flux_function(x):
 
