@@ -1,6 +1,6 @@
 tout = 0
 
-def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r = 0.25, method = 'LSODA', use_cfl = True):
+def run_weathering_model(Lstar, vstar, Yostar, tstar, dxstar = 0.05, r = 0.25, method = 'LSODA', use_cfl = True):
     from weathering_model.utils import pack_values
     from weathering_model.muscl import muscl, vanAlbada
     import numpy as np
@@ -12,7 +12,7 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
 
     def bc_function(x):
         yb = x[-1, 1]
-        return (np.array([[Xostar, 1], [Xostar, 1]]), np.array([[Xostar, yb], [Xostar, yb]]))
+        return (np.array([[1, 1], [1, 1]]), np.array([[1, yb], [1, yb]]))
 
     def flux_function(x):
 
@@ -21,12 +21,12 @@ def run_weathering_model(Lstar, Xostar, vstar, Yostar, tstar, dxstar = 0.05, r =
         return x * v
 
     def source_function(x):
-        X = (x[:,0] <= Xostar) * x[:,0] + (x[:,0] > Xostar) * Xostar
+        X = (x[:,0] <= 1) * x[:,0] + (x[:,0] > 1) * 1
         Y = (x[:,1] > 0) * x[:,1]
         s = np.zeros_like(x)
 
-        s[:,0] = -np.power(Y,r)*np.power(X,2)*(X > 0).astype(X.dtype)*(Y > 0).astype(Y.dtype)*(X <= Xostar).astype(X.dtype)*(Y <= 1.0).astype(Y.dtype)
-        s[:,1] = -r*np.power(X,2)*np.power(Y,r)/Yostar*(X > 0).astype(X.dtype)*(Y > 0).astype(Y.dtype)*(X <= Xostar).astype(X.dtype)*(Y <= 1.0).astype(Y.dtype)
+        s[:,0] = -np.power(Y,r)*np.power(X,2)*(X > 0).astype(X.dtype)*(Y > 0).astype(Y.dtype)*(X <= 1).astype(X.dtype)*(Y <= 1.0).astype(Y.dtype)
+        s[:,1] = -r*np.power(X,2)*np.power(Y,r)/Yostar*(X > 0).astype(X.dtype)*(Y > 0).astype(Y.dtype)*(X <= 1).astype(X.dtype)*(Y <= 1.0).astype(Y.dtype)
         return s
 
     def diffusion_function(x):
