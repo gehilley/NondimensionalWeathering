@@ -1,4 +1,4 @@
-filename = 'models/base_case.p'
+filename = 'models/Round5/YoBC_V0.5xBC.p'
 
 from weathering_model.weathering_model import run_weathering_model
 import numpy as np
