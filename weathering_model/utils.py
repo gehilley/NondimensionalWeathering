@@ -32,14 +32,14 @@ def plot_models(filenames, out_prefix, save_plots = False, plot_symbols = None, 
 
         for (i, plot_symbol) in zip(plot_indexes, plot_symbols):
             plt.figure(1)
-            plt.plot(x, X[i, :], color+plot_symbol)
+            plt.plot(X[i, :], -x, color+plot_symbol)
             plt.figure(2)
-            plt.plot(x, Y[i, :], color+plot_symbol)
+            plt.plot(Y[i, :], -x, color+plot_symbol)
 
     plt.figure(1)
-    plt.axis([0, np.max(x), 0, X0_star_max*1.1])
+    plt.axis([0, X0_star_max*1.1, -(np.max(x)), 0])
     plt.figure(2)
-    plt.axis([0, np.max(x), 0, 1.1])
+    plt.axis([0, 1.1, -(np.max(x)), 0])
     if save_plots:
         plt.figure(1)
         plt.savefig(out_prefix+'_FeO.eps')
