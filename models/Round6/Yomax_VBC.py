@@ -7,7 +7,7 @@ import pickle as p
 # Run model:
 
 L_star = 9.51
-Y0_star = 1.57E-03
+Y0_star = 1.40E-03
 v_star = 2.88E+02
 nx = 101
 t_star_max = 35.8
