@@ -14,22 +14,26 @@ def pack_values(values, packing_geometry=None):
     assert(np.prod(values.shape) == np.prod(np.array(packing_geometry)))
     return np.reshape(values, packing_geometry, order='F')
 
-def plot_models(filenames, out_prefix, save_plots = False, plot_symbols = None, plot_colors = None, t_indexes = None):
+def plot_models(filename, out_prefix, save_plots = False, plot_symbols = None, plot_colors = None, t_indexes = None):
 
     import pickle as p
     import matplotlib.pylab as plt
     import numpy as np
 
-    X0_star_max = 0.0
-    plot_symbols = ['-' for i in range(len(filenames))] if plot_symbols is None else plot_symbols
+    (x, X, Y, L_star, Y0_star, v_star, nx, t_star, dx_star) = p.load(open(filename, 'rb'))
+
+    plot_symbols = ['-' for i in range(len(t_star))] if plot_symbols is None else plot_symbols
     plot_indexes = t_indexes if t_indexes is not None else range(len(t_star))
-    pcs = ['' for i in range(len(plot_indexes))] if plot_colors is None else plot_colors
+    plot_colors = plot_colors if plot_colors is not None else ['r', 'b']
 
-    for (filename, color) in zip(filenames, pcs):
+    plt.figure()
+    plt.title(out_prefix)
 
-        (x, X, Y, L_star, X0_star, Y0_star, v_star, nx, t_star, dx_star) = p.load(open(filename, 'rb'))
-        X0_star_max = X0_star_max if X0_star_max > X0_star else X0_star
+    for (i, plot_symbol) in zip(plot_indexes, plot_symbols):
+        plt.plot(x, X[i, :], plot_symbol, color=plot_colors[0], linewidth=1.0)
+        plt.plot(x, Y[i, :], plot_symbol, color=plot_colors[1], linewidth=1.0)
 
+<<<<<<< HEAD
         for (i, plot_symbol) in zip(plot_indexes, plot_symbols):
             plt.figure(1)
             plt.plot(X[i, :], -x, color+plot_symbol)
@@ -40,14 +44,59 @@ def plot_models(filenames, out_prefix, save_plots = False, plot_symbols = None, 
     plt.axis([0, X0_star_max*1.1, -(np.max(x)), 0])
     plt.figure(2)
     plt.axis([0, 1.1, -(np.max(x)), 0])
+=======
+    ax = plt.gca()
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.yaxis.set_ticks_position('left')
+    ax.xaxis.set_ticks_position('bottom')
+
+    plt.xlabel('$x^{*}$')
+    plt.ylabel('$X^{*}$, $Y^{*}$')
+    plt.axis([0, np.max(x), 0, 1.1])
+
+
+
     if save_plots:
-        plt.figure(1)
-        plt.savefig(out_prefix+'_FeO.eps')
-        plt.figure(2)
-        plt.savefig(out_prefix+'_O2.eps')
+        plt.savefig(out_prefix+'_chem.eps')
     else:
         plt.show()
-    plt.figure(1)
-    plt.close()
-    plt.figure(2)
-    plt.close()
+
+def plot_cracking_models(filename, out_prefix, save_plots = False, plot_symbols = None, plot_colors = None, t_indexes = None, upper_L_crack = 7.4E-6, lower_L_crack = 1.5E-8):
+    import pickle as p
+    import matplotlib.pylab as plt
+    import numpy as np
+
+    import warnings
+
+    warnings.filterwarnings("ignore")
+
+    (x, X, Y, L_star, Y0_star, v_star, nx, t_star, dx_star) = p.load(open(filename, 'rb'))
+
+    plot_symbols = ['-' for i in range(len(t_star))] if plot_symbols is None else plot_symbols
+    plot_indexes = t_indexes if t_indexes is not None else range(len(t_star))
+
+    plt.figure()
+    plt.title(out_prefix)
+
+    for (i, plot_symbol) in zip(plot_indexes, plot_symbols):
+        L_crack = np.power(Y0_star,2) / np.power(1-X[i,:],2)
+        plt.semilogy(x, L_crack, 'k' + plot_symbol, linewidth=1.0)
+        plt.semilogy([0, max(x)], [upper_L_crack, upper_L_crack], 'k--', linewidth=1.0)
+        plt.semilogy([0, max(x)], [lower_L_crack, lower_L_crack], 'k:', linewidth=1.0)
+
+    ax = plt.gca()
+    ax.spines['right'].set_visible(False)
+    ax.spines['top'].set_visible(False)
+    ax.yaxis.set_ticks_position('left')
+    ax.xaxis.set_ticks_position('bottom')
+
+    plt.xlabel('$x^{*}$')
+    plt.ylabel('$L^{*}$')
+    plt.axis([0, np.max(x), 1E-8, 1E-4])
+
+>>>>>>> 8b59a00d59c026e1b3a3b8f7c3c6fe51a272c21a
+    if save_plots:
+        plt.savefig(out_prefix + '_crack.eps')
+    else:
+        plt.show()
