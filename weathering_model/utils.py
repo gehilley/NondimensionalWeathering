@@ -32,19 +32,6 @@ def plot_models(filename, out_prefix, save_plots = False, plot_symbols = None, p
     for (i, plot_symbol) in zip(plot_indexes, plot_symbols):
         plt.plot(x, X[i, :], plot_symbol, color=plot_colors[0], linewidth=1.0)
         plt.plot(x, Y[i, :], plot_symbol, color=plot_colors[1], linewidth=1.0)
-
-<<<<<<< HEAD
-        for (i, plot_symbol) in zip(plot_indexes, plot_symbols):
-            plt.figure(1)
-            plt.plot(X[i, :], -x, color+plot_symbol)
-            plt.figure(2)
-            plt.plot(Y[i, :], -x, color+plot_symbol)
-
-    plt.figure(1)
-    plt.axis([0, X0_star_max*1.1, -(np.max(x)), 0])
-    plt.figure(2)
-    plt.axis([0, 1.1, -(np.max(x)), 0])
-=======
     ax = plt.gca()
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
@@ -95,7 +82,6 @@ def plot_cracking_models(filename, out_prefix, save_plots = False, plot_symbols 
     plt.ylabel('$L^{*}$')
     plt.axis([0, np.max(x), 1E-8, 1E-4])
 
->>>>>>> 8b59a00d59c026e1b3a3b8f7c3c6fe51a272c21a
     if save_plots:
         plt.savefig(out_prefix + '_crack.eps')
     else:
