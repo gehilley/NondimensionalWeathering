@@ -22,7 +22,7 @@ def run_weathering_model(Lstar, vstar, Yostar, tstar, dxstar = 0.05, r = 0.25, m
 
     def source_function(x):
         X = (x[:,0] <= 1) * x[:,0] + (x[:,0] > 1) * 1
-        Y = (x[:,1] > 0) * x[:,1]
+        Y = (np.logical_and(x[:,1] > 0, x[:,1] <= 1) * x[:,1] + (x[:,1] > 1)*1
         s = np.zeros_like(x)
 
         s[:,0] = -np.power(Y,r)*np.power(X,2)*(X > 0).astype(X.dtype)*(Y > 0).astype(Y.dtype)*(X <= 1).astype(X.dtype)*(Y <= 1.0).astype(Y.dtype)
