@@ -8,9 +8,9 @@ import pickle as p
 
 L_star = 9.51
 Y0_star = 1.40E-03
-v_star = 2.03E+08
+v_star = 2.03E+06
 nx = 101
-t_star_max = 36.2
+t_star_max = 16.2
 
 t_star = np.linspace(0,t_star_max,num=11)
 dx_star = L_star / float(nx)
